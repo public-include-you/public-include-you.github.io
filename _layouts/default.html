@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: "en-US" }}">
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+{% seo %}
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          {% if site.github.is_project_page %}
+            <a id="forkme_banner" href="{{ site.github.repository_url }}">View on GitHub</a>
+          {% endif %}
+
+          <a href="https://public-include-yougithub.io/"><h1 id="project_title">{{ site.title | default: site.github.repository_name }}</h1></a>
+          <h2 id="project_tagline">{{ site.description | default: site.github.project_tagline }}</h2>
+          <h4 id="last_update" style="color:#069"> 전체 포스팅 마지막 업데이트:</h2>
+        </header>
+        <script>
+          function GetTimeDiff(a,b) {
+            var t=a-b
+            var table = {미리초:1000,초:60,분:60,시간:24,일:Infinity}
+            for(var i in table){
+              if((t-t%table[i])/table[i] == 0)
+                return t+i+"전"
+              t=(t-t%table[i])/table[i]
+            }
+          }
+
+          var tmp;
+          var t = new Date("{{site.time}}")
+          document.getElementById("last_update").innerText+="\n "+(1900+t.getYear())+"년 "+(t.getMonth()+1)+"월 "+t.getDate()+"일("+"일월화수목금토".split("")[t.getDay()]+") "+(t.getHours() < 12 ? "오전" : "오후")+" "+((tmp = t.getHours() % 12) ? tmp : 12)+"시 "+(t.getMinutes()?t.getMinutes()+"분":"")+"("+GetTimeDiff(new Date,t)+")"
+
+        </script>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <div class='basic-font'>
+          {{ content }}
+          <!--DISQUS-->
+          <script>
+              /*
+              var disqus_config = function () {
+              this.page.url = "site.url"
+              this.page.identifier = 
+              };
+              */
+              (function() { // DON'T EDIT BELOW THIS LINE
+              var d = document, s = d.createElement('script');
+              s.src = 'https://public-include-you.disqus.com/embed.js';
+              s.setAttribute('data-timestamp', +new Date());
+              (d.head || d.body).appendChild(s);
+              })();
+          </script>
+           <!--/DISQUS-->
+        </div>
+      </section>
+    </div>
+    
+                            
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        {% if site.github.is_project_page %}
+        <p class="copyright">{{ site.title | default: site.github.repository_name }} maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
+        {% endif %}
+        <p title="Email"><a href="mailto:public.include.you@gmail.com">public.include.you@gmail.com</a></p>
+        <a href="https://github.com/public-include-you"><img style="border: 10px black;border-radius: 10px" src="https://public-include-yougithub.io/assets/images/blacktocat.png"></a>
+      </footer>
+    </div>
+
+    {% if site.google_analytics %}
+      <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', '{{ site.google_analytics }}', 'auto');
+        ga('send', 'pageview');
+      </script>
+    {% endif %}
+
+    <!--UI 수정-->
+    <script>
+      var contents=document.getElementsByClassName("basic-font")[0]
+      var i
+      /* 키워드 AUTO-LINK에 대해*/
+      if((i=contents.innerHTML.indexOf("AUTO-LINK"))!=-1){
+        // 키워드 AUTO-LINK 삭제
+        contents.innerHTML =
+          contents.innerHTML.substr(0,i)
+          +contents.innerHTML.substr(i+"AUTO-LINK".length); 
+        // 제목에 이전 항목으로 돌아간는 링크 추가
+        contents.firstElementChild.innerHTML = '<a href="..">'+contents.firstElementChild.innerHTML+'</a>'
+
+        var li=contents.firstElementChild.nextElementSibling.firstElementChild;
+        for(var i=1;li;++i,li=li.nextElementSibling)
+          // 각 리스트마다 링크 부여 순서대로 1.html - n.html
+          li.innerHTML="<a href=\""+i+".html\">"+li.innerHTML+"</a>"
+      }
+      /* 키워드 COMMENT에 대해*/
+      if((i=contents.innerHTML.indexOf("COMMENT"))!=-1){
+        // 키워드 AUTO-LINK 삭제 및 DISQUS THREAD 생성
+          contents.innerHTML =
+            contents.innerHTML.substr(0,i)
+            +'<div id="disqus_thread"></div>'
+            +contents.innerHTML.substr(i+"COMMENT".length);
+        }
+      /* n.html꼴에 대해 */
+      if(matched=location.href.match(/(\d)+.html/)){
+        // DISQUS THREAD 생성
+        contents.innerHTML+='<div id="disqus_thread"></div>' 
+        // 제목에 해당 카테고리의 인덱스로 돌아가는 링크 추가
+        contents.firstElementChild.innerHTML = '<a href="index.html">'+contents.firstElementChild.innerHTML+'</a>'
+        /* 개념 카테고리 */
+        if(location.href.includes("concept")) 
+         // 이전 페이지로 돌아가기 추가
+          contents.innerHTML+= '<center><a href="javascript:history.back()">이전 페이지로 돌아가기</a></center>'
+        /* ← Previous Next → 링크 만들기*/
+        var page_index = +matched[1]
+        if(page_index!=1)contents.innerHTML+="<li style=\"display:inline\">\n <a href=\"./"+(page_index-1)+".html\">← Previous</a>\n </li>"
+        else contents.innerHTML+="<li style=\"display:inline\">\n ← Previous\n </li>"
+        if((i=contents.innerHTML.indexOf("LAST-POST"))!=-1){
+          contents.innerHTML =
+            contents.innerHTML.substr(0,i)
+            +contents.innerHTML.substr(i+"LAST-POST".length);
+          contents.innerHTML+="<li class=\"next\" style=\"display:inline;float:right\">\n Next →\n </li>"
+        }else
+          contents.innerHTML+="<li class=\"next\" style=\"display:inline;float:right\">\n <a href=\"./"+(page_index+1)+".html\">Next →</a>\n </li>"
+      }
+    </script>
+    <!--DISQUS-->
+    <script id="dsq-count-scr" src="//public-include-you.disqus.com/count.js" async></script>
+    <!--/DISQUS-->
+    <script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  </body>
+</html>

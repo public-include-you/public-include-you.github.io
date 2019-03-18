@@ -1,0 +1,13 @@
+---
+---
+
+@import "{{ site.theme }}";
+@font-face {
+    font-family: 'basic-font';
+    src:url('https://www.koreafont.com/web.php?name=kv1444894936');
+}
+
+.basic-font{
+    font-family: 'basic-font';
+    font-size: 25px
+}
